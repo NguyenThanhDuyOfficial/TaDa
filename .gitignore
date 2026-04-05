@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docker
+.dockerignore
+
+# prisma
+prisma/ingrations/
+/src/generated/prisma
+
+

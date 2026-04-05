@@ -144,22 +144,6 @@ Modular Monolith
 |        | Admin | to search user in user page                                  |         | Medium   |
 |        | User  | to change my avatar, name                                    |         | Low      |
 
-## Boundaries & Dependencies
-
-    Owns:
-
-        User records, roles, role assignments.
-
-        User CRUD logic and validation.
-
-    Depends on:
-
-        shared/types.User and shared/types.Role.
-
-        server/shared/permissions (for permission checks).
-
-        server/database (Prisma service).
-
 ## Data model / entities
 
 ```Prisma
