@@ -37,7 +37,13 @@ If you’re tired of constantly switching between multiple tabs to manage orders
 
 ### Built With
 
-- [![Next][Next.js]][Next-url]
+[![React][React]][React-url]
+[![Vite][Vite]][Vite-url]
+[![Node.js][Node.js]][Node.js-url]
+[![Express.js][Express.js]][Express.js-url]
+[![Prisma][Prisma]][Prisma-url]
+[![Postgres][Postgres]][Postgres-url]
+[![Redis][Redis]][Redis-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -96,5 +102,17 @@ Distributed under the GPLv3 License. See `LICENSE.txt` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
+[React]: https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=for-the-badge
+[React-url]: https://react.dev/
+[Vite]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white
+[Vite-url]: https://vite.dev/
+[Node.js]: https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white
+[Node.js-url]: https://nodejs.org/en
+[Express.js]: https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=fff&style=for-the-badge
+[Express.js-url]: https://expressjs.com/
+[Prisma]: https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white
+[Prisma-url]: https://www.prisma.io/
+[Postgres]: https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white
+[Postgres-url]: https://www.postgresql.org/
+[Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
+[Redis-url]: https://redis.io/
