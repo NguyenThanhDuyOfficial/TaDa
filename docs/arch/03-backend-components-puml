@@ -1,0 +1,49 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title TaDa ERP - Backend Components (C3)
+
+
+Container_Boundary(backend_boundary, "API Backend") {
+  Component(auth_svc, "Auth Service", "TypeScript + JWT", "Authentication & authorization")
+  Component(user_svc, "User Service", "TypeScript", "User CRUD, roles, permissions")
+  Component(inventory_svc, "Inventory Service", "TypeScript", "Inventory CRUD")
+  Component(order_svc, "Order Service", "TypeScript", "Order CRUD")
+  Component(customer_svc, "Customer Service", "TypeScript", "Customer CRUD")
+  
+  Component(user_repo, "User Repository", "TypeScript + Prisma", "User data access")
+  Component(inventory_repo, "Inventory Repository", "Typescript", "Inventory data access")
+  Component(order_repo, "Order Repository", "TypeScript + Prisma", "Order data access")
+  Component(customer_repo, "Customer Repository", "TypeScript + Prisma", "Customer data access")
+}
+
+Container(postgres, "PostgreSQL 16", "Primary database")
+Container(redis, "Redis 7", "Cache & sessions")
+
+Rel(auth_svc, user_repo, "read-only", "user validation")
+Rel(user_svc, user_repo, "Prisma ORM", "CRUD operations")
+Rel(inventory_svc, inventory_repo, "Prisma ORM", "CRUD operations")
+Rel(order_svc, order_repo, "Prisma ORM", "CRUD operations")
+Rel(customer_svc, customer_repo, "Prisma ORM", "CRUD operations")
+
+Rel(user_svc, auth_svc, "JWT tokens", "authorization checks")
+Rel(user_svc, auth_svc, "JWT tokens", "role-based access")
+Rel(inventory_svc, auth_svc, "JWT tokens", "role-based access")
+Rel(order_svc, auth_svc, "JWT tokens", "role-based access")
+Rel(customer_svc, auth_svc, "JWT tokens", "role-based access")
+
+Rel(backend_boundary, user_svc, "POST /users/*", "user management")
+Rel(backend_boundary, inventory_svc, "POST /inventory/*", "ERP operations")
+Rel(backend_boundary, order_svc, "POST /order/*", "ERP operations")
+Rel(backend_boundary, customer_svc, "POST /customer/*", "ERP operations")
+
+
+SHOW_LEGEND()
+
+note top of backend_boundary
+  C4 Level 3 - Backend Components (Sprint 3)
+  Major modules inside API Backend container
+  6 core components + data layer
+  Entry APIs + internal flows shown
+end note
+@enduml

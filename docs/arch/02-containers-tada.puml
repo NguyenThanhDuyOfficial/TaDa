@@ -1,0 +1,32 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title TaDa ERP System - Container Diagram (C2)
+
+Person(admin, "Admin", "System administrator")
+Person(staff, "Staff", "Business operators")
+
+System_Boundary(tada_boundary, "TaDa ERP System") {
+  Container(webapp, "Web Dashboard", "React + Vite", "Single Page App for admins/staff")
+  Container(backend, "API Backend", "Node.js + Express", "REST + WebSocket APIs")
+  
+  ContainerDb(postgres, "Primary DB", "PostgreSQL 16", "Users, business data, transactions")
+  ContainerDb(redis, "Cache", "Redis 7", "Session storage, real-time data")
+}
+
+Rel(admin, webapp, "HTTPS", "manages system")
+Rel(staff, webapp, "HTTPS", "daily operations")
+Rel(webapp, backend, "HTTP/REST", "manages users, views reports")
+Rel(backend, postgres, "JDBC", "reads/writes persistent data")
+Rel(backend, redis, "RESP", "caches sessions, real-time")
+
+SHOW_LEGEND()
+LAYOUT_TOP_DOWN()
+
+note right of backend
+  C4 Level 2 - Containers
+  High-level technical building blocks
+  Technologies + protocols shown
+  Deployable units only
+end note
+@enduml

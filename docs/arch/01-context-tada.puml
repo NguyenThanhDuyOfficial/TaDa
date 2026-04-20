@@ -1,0 +1,25 @@
+@startuml inventory-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title TaDa System - System Context Diagram (C1)
+
+Person(admin, "Admin", "Manages users, views reports")
+Person(staff, "Staff", "Manages business operations")
+
+System(tada, "TaDa App", "ERP system for business management")
+
+System_Ext(postgres, "PostgreSQL", "Primary data storage")
+
+Rel(admin, tada, "manages users, views analytics")
+Rel(staff, tada, "manages operations")
+Rel(tada, postgres, "reads/writes business data")
+
+LAYOUT_WITH_LEGEND()
+
+note bottom of tada
+  C4 Level 1 - System Context
+  Single software system + users + external systems
+  Updated: Sprint 0 - 2026-04-20
+end note
+
+@enduml
