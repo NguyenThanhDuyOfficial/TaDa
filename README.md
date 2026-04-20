@@ -44,6 +44,7 @@ If you’re tired of constantly switching between multiple tabs to manage orders
 [![Prisma][Prisma]][Prisma-url]
 [![Postgres][Postgres]][Postgres-url]
 [![Redis][Redis]][Redis-url]
+[![JWT][JWT]][JWT-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,3 +117,5 @@ Distributed under the GPLv3 License. See `LICENSE.txt` for more information.
 [Postgres-url]: https://www.postgresql.org/
 [Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
 [Redis-url]: https://redis.io/
+[JWT]: https://img.shields.io/badge/JWT-black?style=plastic&logo=JSON%20web%20tokens
+[JWT-url]: https://jwt.io/
