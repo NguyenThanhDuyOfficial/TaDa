@@ -42,3 +42,5 @@ ehthumbs.db
 
 # Dependencies (lockfiles optional - include for reproducible builds)
 # package-lock.json  # Uncomment if using yarn/pnpm instead
+
+/generated/prisma
