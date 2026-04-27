@@ -1,20 +1,34 @@
 import express from 'express'
 
 import { asyncHandler } from "@api/common/utils/asyncHandler"
-import { AuthController } from "@api/modules/auth/auth.controller"
-import { authMiddleware } from "@api/modules/auth/auth.middleware";
+import { authMiddleware, createSessionRepo, createAuthController, createAuthService } from '@api/modules/auth';
+import { createUserRepo } from '@api/modules/user';
 
-const router = express.Router()
+export function createAuthModule() {
+  const userRepo = createUserRepo();
+  const sessionRepo = createSessionRepo();
 
-router.post('/register', asyncHandler(AuthController.register))
-router.post('/login', asyncHandler(AuthController.login))
-
-
-router.get("/protected", authMiddleware, (req, res) => {
-  res.json({
-    message: "You accessed a protected route",
-    user: (req as any).user,
+  const authService = createAuthService({
+    userRepo,
+    sessionRepo,
   });
-});
+  const authController = createAuthController({
+    authService,
+  });
 
-export default router
+  const router = express.Router()
+
+  router.post('/register', asyncHandler(authController.register))
+  router.post('/login', asyncHandler(authController.login))
+
+
+  router.get("/protected", authMiddleware, (req, res) => {
+    res.json({
+      message: "You accessed a protected route",
+      user: (req as any).user,
+    });
+  });
+
+  return { router }
+}
+

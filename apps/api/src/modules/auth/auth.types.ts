@@ -6,3 +6,7 @@ export type AuthOutput = {
   accessToken: string
 }
 
+export type TokenOutput = {
+  accessToken: string,
+  refreshToken: string
+}

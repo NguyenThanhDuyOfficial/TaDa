@@ -1,11 +1,12 @@
 import express from 'express'
+import cookieParser from "cookie-parser"
 import cors from 'cors'
 import helmet from 'helmet'
 
 import { requestIdMiddleware } from '@api/middleware/requestId.middleware'
 import { errorMiddleware } from '@api/middleware/error.middleware'
 
-import { authRouter } from '@api/modules/auth'
+import { createAuthModule } from './modules/auth/auth.route'
 
 export const createApp = () => {
   const app = express()
@@ -31,10 +32,11 @@ export const createApp = () => {
     res.status(200).json({ status: 'ok' })
   })
 
-  app.use('/auth', authRouter)
+  const authModule = createAuthModule()
+  app.use('/auth', authModule.router)
 
   // Error handler (LAST)
   app.use(errorMiddleware)
-
+  app.use(cookieParser())
   return app
 }

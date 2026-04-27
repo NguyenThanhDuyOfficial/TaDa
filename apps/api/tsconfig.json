@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "outDir": "dist",
     "rootDir": "src",
     "module": "NodeNext",
@@ -8,10 +9,14 @@
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
-    "type": "module",
+    "types": [
+      "node",
+      "jest"
+    ],
   },
   "include": [
     "src",
-    "prisma.config.ts"
+    "prisma.config.ts",
+    "test"
   ]
 }

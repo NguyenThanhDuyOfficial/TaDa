@@ -1,6 +1,6 @@
 import type { Response } from 'express';
 
-import { HTTP_STATUS, type HttpStatusCode } from '../constants/httpStatus';
+import { HTTP_STATUS, type HttpStatusCode } from '@api/common/constants/httpStatus';
 
 interface SuccessPayload<T> {
   success: true;

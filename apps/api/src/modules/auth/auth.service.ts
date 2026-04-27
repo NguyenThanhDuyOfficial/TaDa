@@ -1,58 +1,64 @@
 import bcrypt from 'bcryptjs'
 import jwt from "jsonwebtoken"
+import crypto from "crypto"
 import "dotenv/config"
 
-import { UserService } from "@api/modules/user/user.service"
-import { AuthInput } from '@api/modules/auth/auth.schema'
-import { CreateUserInput } from '../user/user.schema'
-import { User } from '../../generated/prisma/client'
 import { AppError } from '@api/common/errors/AppErrors'
 import { ERROR_MESSAGES } from '@api/common/constants/errorMessages'
-import { sendSuccess } from '@api/common/utils/response'
-import type { AuthOutput } from "@api/modules/auth/auth.types"
+
+import { AuthInput, TokenOutput, SessionRepo, createSessionRepo } from '@api/modules/auth'
+import { CreateUserInput, UserRepo } from "@api/modules/user"
 
 
-async function register(input: AuthInput): Promise<AuthOutput> {
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(input.password, salt)
-
-  const createUserInput: CreateUserInput = {
-    email: input.email,
-    password: hashedPassword
-  }
-
-  const user = await UserService.create(createUserInput)
-
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, {
-    expiresIn: '1h'
-  })
-
-  return {
-    user: {
-      id: user.id,
-      email: user.email
-    },
-    accessToken: token
-  }
+export type AuthService = {
+  register(input: AuthInput): Promise<TokenOutput>
+  login(input: AuthInput): Promise<TokenOutput>
 }
 
-async function login(input: AuthInput): Promise<AuthOutput> {
-  const user = await UserService.getByEmail(input.email)
-  if (!user) throw AppError.notFound(ERROR_MESSAGES.USER_NOT_FOUND)
 
-  const passwordMatch = await bcrypt.compare(input.password, user.password)
-  if (!passwordMatch) throw AppError.unauthorized(ERROR_MESSAGES.INVALID_CREDENTIALS)
+export function createAuthService({ userRepo, sessionRepo }: { userRepo: UserRepo, sessionRepo: SessionRepo }) {
 
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, {
-    expiresIn: '1h'
-  })
-  return {
-    user: {
-      id: user.id,
-      email: user.email
-    },
-    accessToken: token
+  async function createTokens(userId: string) {
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+    const expiresAt = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) // 10 days;
+
+    await sessionRepo.create(userId, refreshToken, expiresAt)
+    const accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET as string)
+
+    const tokenOutput: TokenOutput = {
+      accessToken: accessToken,
+      refreshToken: refreshToken
+    }
+
+    return tokenOutput
   }
+
+  async function register(input: AuthInput): Promise<TokenOutput> {
+    const existing = await userRepo.findByEmail(input.email)
+    if (existing) throw AppError.unauthorized(ERROR_MESSAGES.INVALID_CREDENTIALS)
+
+    const hashedPassword = await bcrypt.hash(input.password, 10)
+
+    const createUserInput: CreateUserInput = {
+      email: input.email,
+      passwordHash: hashedPassword,
+    };
+
+    const user = await userRepo.create(createUserInput)
+
+    return await createTokens(user.id)
+  }
+
+  async function login(input: AuthInput) {
+    const user = await userRepo.findByEmail(input.email)
+    if (!user) throw AppError.unauthorized(ERROR_MESSAGES.INVALID_CREDENTIALS)
+
+    const isValid = await bcrypt.compare(input.password, user.passwordHash!)
+    if (!isValid) throw AppError.unauthorized(ERROR_MESSAGES.INVALID_CREDENTIALS)
+
+    return await createTokens(user.id)
+  }
+
+  return { register, login }
 }
 
-export const AuthService = { register, login };

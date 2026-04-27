@@ -9,7 +9,7 @@ export const createUserSchema = z.object({
     })
     .toLowerCase()
     .trim(),
-  password: z.string({
+  passwordHash: z.string({
     error: (issue) => issue.input === undefined
       ? "This field is required"
       : "Not a string"
