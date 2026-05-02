@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* Core */
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    /* Interop */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    /* DX */
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    /* Paths (important for monorepo) */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@api/*": [
+        "apps/api/src/*"
+      ],
+      "@web/*": [
+        "apps/web/src/*"
+      ],
+      "@shared/*": [
+        "packages/*"
+      ]
+    }
+  }
+}
