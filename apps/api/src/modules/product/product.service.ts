@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto, PatchProductDto } from './product.controller';
 import { PrismaService } from '@module/prisma/prisma.service';
 import { Product, Prisma } from '@/generated/prisma/client';
 

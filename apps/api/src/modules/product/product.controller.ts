@@ -1,21 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ProductService } from './product.service';
 
-export class CreateProductDto {
-  name: string;
-  stockQuantity: number;
-  price: number;
-}
-export class PatchProductDto {
-  name?: string;
-  stockQuantity?: number;
-  price?: number;
-}
-export class ProductDto {
-  name: string;
-  stockQuantity?: number;
-  price?: number;
-}
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
@@ -31,12 +16,12 @@ export class ProductController {
   }
 
   @Post()
-  async create(@Body() productData: { name: string, stockQuantity?: number, price?: number }) {
-    const { name, stockQuantity, price } = productData
+  async create(@Body() productData: { name: string, stock?: number, price?: number }) {
+    const { name, stock, price } = productData
     await this.productService.createProduct(
       {
         name,
-        stockQuantity,
+        stock,
         price
       }
     )
@@ -44,7 +29,7 @@ export class ProductController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() productData: { name?: string, stockQuantity?: number, price?: number }) {
+  async update(@Param('id') id: string, @Body() productData: { name?: string, stock?: number, price?: number }) {
     await this.productService.updateProduct({ where: { id }, data: productData })
     return
   }
