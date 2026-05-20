@@ -17,11 +17,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate": "dotenv -e ../../.env yarn dlx prisma migrate dev",
-    "generate": "dotenv -e ../../.env yarn dlx prisma generate",
-    "pull": "dotenv -e ../../.env yarn dlx prisma db pull --schema./prisma/schema.prisma",
-    "push": "dotenv -e ../../.env yarn dlx prisma db push --schema./prisma/schema.prisma",
-    "reset": "dotenv -e ../../.env yarn dlx prisma migrate reset --schema=./prisma/schema.prisma"
+    "migrate": "yarn dlx prisma migrate dev",
+    "generate": "yarn dlx prisma generate",
+    "pull": "yarn dlx prisma db pull --schema./prisma/schema.prisma",
+    "push": "yarn dlx prisma db push --schema./prisma/schema.prisma",
+    "reset": "yarn dlx prisma migrate reset --schema=./prisma/schema.prisma"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
