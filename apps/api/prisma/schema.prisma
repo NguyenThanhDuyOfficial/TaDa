@@ -14,16 +14,27 @@ model User {
   passwordHash String
 }
 
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED
 }
 
 model Product {
-  id    String @id @default(cuid())
-  name  String @unique
-  price Float  @default(0)
-  stock Int    @default(0)
+  id          String        @id @default(cuid())
+  name        String        @unique
+  sku         String?
+  price       Float         @default(0)
+  stock       Int           @default(0)
+  category    String?
+  status      ProductStatus @default(ACTIVE)
+  description String?
+  supplier    String?
 
   orderItems OrderItem[]
 
