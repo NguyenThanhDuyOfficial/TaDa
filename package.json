@@ -6,9 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspaces foreach -Apt run dev",
-    "db:migrate": "yarn workspace database run migrate",
-    "db:generate": "yarn workspace database run generate"
+    "dev": "yarn workspaces foreach -Apt run dev"
   },
   "devDependencies": {
     "dotenv-cli": "^11.0.0"

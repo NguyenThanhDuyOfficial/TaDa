@@ -1,15 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import {
   Package,
   Plus,
   Search,
+  Filter,
   Edit,
   Trash2,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  Check,
+  AlertCircle
 } from 'lucide-react';
 import clsx from 'clsx';
 import type { Product, ProductFormData } from '@/lib/types';
@@ -42,11 +46,30 @@ export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Filter products
+  // Fetch products từ API (dựa theo mô hình từ Stock Inventory Management [citation:1])
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/products`);
+      if (!response.ok) throw new Error('Failed to fetch');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Không thể tải danh sách sản phẩm' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter products dựa trên search và status [citation:1][citation:7]
   const filteredProducts = products.filter(product => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.sku?.toLowerCase().includes(searchTerm.toLowerCase());
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -58,7 +81,50 @@ export default function ProductsPage() {
     currentPage * itemsPerPage
   );
 
-  // Modal handlers
+  // Handle form submit (thêm mới hoặc cập nhật)
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    try {
+      const url = editingProduct
+        ? `${process.env.NEXT_PUBLIC_API_HOST}/products/${editingProduct.id}`
+        : `${process.env.NEXT_PUBLIC_API_HOST}/products`;
+      const method = editingProduct ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error('Failed to save');
+
+      setMessage({
+        type: 'success',
+        text: editingProduct ? 'Cập nhật sản phẩm thành công' : 'Thêm sản phẩm thành công'
+      });
+
+      closeModal();
+      fetchProducts();
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Có lỗi xảy ra, vui lòng thử lại' });
+    }
+  };
+
+  // Handle delete product
+  const handleDelete = async (id: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return;
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/products/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Failed to delete');
+
+      setMessage({ type: 'success', text: 'Xóa sản phẩm thành công' });
+      fetchProducts();
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Không thể xóa sản phẩm' });
+    }
+  };
+
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
     setFormData({
@@ -94,21 +160,6 @@ export default function ProductsPage() {
     setEditingProduct(null);
   };
 
-  const fetchProducts = () => {
-    // TODO: Fetch products from API
-    console.log('fetchProducts - implement yourself');
-  };
-
-  const handleSubmit = () => {
-    // TODO: Handle create/update product
-    console.log('handleSubmit - implement yourself');
-  };
-
-  const handleDelete = (id: string) => {
-    // TODO: Handle delete product
-    console.log('handleDelete - implement yourself', id);
-  };
-
   return (
     <div className="p-6">
       {/* Header */}
@@ -142,7 +193,7 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {/* Filters */}
+      {/* Filters - dựa trên Stock Inventory Management [citation:1] */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -278,7 +329,7 @@ export default function ProductsPage() {
         )}
       </div>
 
-      {/* Modal Form */}
+      {/* Modal Form (Thêm/Sửa sản phẩm) - dựa trên Stock Inventory Management [citation:1] */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -291,7 +342,7 @@ export default function ProductsPage() {
               </button>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
