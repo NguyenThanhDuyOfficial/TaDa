@@ -7,14 +7,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-secondary text-foreground">
       {/* Sidebar - fixed width on desktop */}
-      <div className=" flex-none bg-white border-r">
+      <div className=" flex-none border-r">
         <SideNav />
       </div>
 
       {/* Main content area - scrollable */}
-      <div className="grow p-6 md:overflow-y-auto md:p-12 bg-gray-50">
+      <div className="grow md:overflow-y-auto">
         {children}
       </div>
     </div>
