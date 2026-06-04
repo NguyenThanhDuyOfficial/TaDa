@@ -34,7 +34,6 @@ model Product {
   category    String?
   status      ProductStatus @default(ACTIVE)
   description String?
-  supplier    String?
 
   orderItems OrderItem[]
 

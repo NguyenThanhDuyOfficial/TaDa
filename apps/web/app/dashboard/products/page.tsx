@@ -1,3 +1,7 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { AddProductsDiaglog } from './_components/AddProductsDialog'
 import { RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,13 +13,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { columns, Product } from "./columns"
-import { DataTable } from "./data-table"
-import { getData } from "./products"
+import { columns } from "./_components/columns"
+import { DataTable } from "./_components/data-table"
+import { getAllProducts } from "./_lib/products.api"
+import { Product } from './_lib/products.type'
 
-export default async function ProductsPage() {
-  const data = await getData()
 
+
+export default function ProductsPage() {
+  const [loading, setLoading] = useState(true)
+  const [products, setProducts] = useState<Product[]>([])
+
+  // Search
+  const [searchTerm, setSearchTerm] = useState('')
+
+
+  function handleSearch() { }
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      const data = await getAllProducts()
+      setProducts(data)
+      setLoading(false)
+    }
+    fetchData()
+  }, [])
 
 
   return (
@@ -26,23 +49,18 @@ export default async function ProductsPage() {
           <p>Manage your products</p>
         </div>
         <div>
-          {/* Add products  -Button */}
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-            size="lg">
-            Add Product
-          </Button>
+          <AddProductsDiaglog />
         </div>
       </div>
 
+
       <div className="flex flex-col m-4 p-4 rounded-lg bg-background">
         <div className="flex justify-between">
-          {/* Search */}
+
           <div className="w-80">
-            <Input type="search" placeholder="Search..." />
+            <Input type="search" placeholder="Search..." onChange={handleSearch} />
           </div>
 
-          {/* Filter Bar */}
           <div className="flex items-center gap-2">
             <Select >
               <SelectTrigger className="w-45">
@@ -62,17 +80,15 @@ export default async function ProductsPage() {
           </div>
 
         </div>
-        {/* Table */}
 
+        {/* Table */}
         <div className="mt-4">
-          <DataTable columns={columns} data={data} />
+          <DataTable columns={columns} data={products} />
         </div>
       </div>
 
 
-      <div>
-        {/* Pagination - Pagination */}
-      </div>
     </div>
   )
 }
+
